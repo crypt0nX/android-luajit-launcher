@@ -108,6 +108,7 @@ object DeviceInfo {
         ONYX_MAGICBOOK,
         ONYX_MAX,
         ONYX_MAX2_PRO,
+        ONYX_MAX3,
         ONYX_MONTECRISTO3,
         ONYX_NOTE,
         ONYX_NOTE3,
@@ -119,6 +120,7 @@ object DeviceInfo {
         ONYX_NOTE_AIR_3C,
         ONYX_NOTE_AIR_4C,
         ONYX_NOTE_AIR_5C,
+        ONYX_T10C_PLUS,
         ONYX_NOTE_MAX,
         ONYX_NOTE_PRO,
         ONYX_NOTE_S,
@@ -502,6 +504,10 @@ object DeviceInfo {
             MANUFACTURER == "onyx" && PRODUCT == "max2pro" && DEVICE == "max2pro"
             -> Id.ONYX_MAX2_PRO
 
+            // Onyx Max 3 (same EPD and light configuration as Max2 Pro)
+            MANUFACTURER == "onyx" && PRODUCT == "max3" && DEVICE == "max3"
+            -> Id.ONYX_MAX3
+
             // Onyx Montecristo 3
             MANUFACTURER == "onyx" && PRODUCT == "mc_kepler_c" && DEVICE == "mc_kepler_c"
             -> Id.ONYX_MONTECRISTO3
@@ -545,6 +551,10 @@ object DeviceInfo {
             // Onyx Note Air 5C
             BRAND == "onyx" && MODEL == "noteair5c"
             -> Id.ONYX_NOTE_AIR_5C
+
+            // Onyx T10 C Plus (same EPD and light configuration as Note Air 5C)
+            BRAND == "onyx" && MODEL == "t10cplus"
+            -> Id.ONYX_T10C_PLUS
 
             // Onyx Boox Note Max
             BRAND == "onyx" && PRODUCT == "notemax" && DEVICE == "notemax"
@@ -754,6 +764,7 @@ object DeviceInfo {
             Id.LINFINY_ENOTE,
             Id.MOAAN_W7,
             Id.ONYX_MAX,
+            Id.ONYX_MAX3,
             Id.ONYX_MAX2_PRO,
             Id.ONYX_NOTE,
             Id.SONY_CP1,
@@ -775,6 +786,7 @@ object DeviceInfo {
             Id.ONYX_NOTE_AIR_3C,
             Id.ONYX_NOTE_AIR_4C,
             Id.ONYX_NOTE_AIR_5C,
+            Id.ONYX_T10C_PLUS,
             Id.ONYX_PALMA2_PRO,
             Id.ONYX_TAB_ULTRA_C,
             Id.ONYX_TAB_ULTRA_C_PRO,

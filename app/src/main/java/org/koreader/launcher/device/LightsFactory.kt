@@ -27,6 +27,7 @@ object LightsFactory {
                 DeviceInfo.Id.ONYX_NOTE_AIR_3C,
                 DeviceInfo.Id.ONYX_NOTE_AIR_4C,
                 DeviceInfo.Id.ONYX_NOTE_AIR_5C,
+                DeviceInfo.Id.ONYX_T10C_PLUS,
                 DeviceInfo.Id.ONYX_NOVA_AIR,
                 DeviceInfo.Id.ONYX_PAGE,
                 DeviceInfo.Id.ONYX_PALMA,

@@ -9,6 +9,8 @@ interface EPDInterface {
 
     fun getWaveformFull(): Int
     fun getWaveformPartial(): Int
+    // Text-specific partial waveform; controllers can fall back to normal partial.
+    fun getWaveformPartialText(): Int = getWaveformPartial()
     fun getWaveformFullUi(): Int
     fun getWaveformPartialUi(): Int
     fun getWaveformFast(): Int

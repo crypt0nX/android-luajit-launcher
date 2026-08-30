@@ -93,6 +93,10 @@ class OnyxEPDController : QualcommEPDController(), EPDInterface {
         return EINK_WAVEFORM_UPDATE_PARTIAL + EINK_WAVEFORM_MODE_GC16
     }
 
+    override fun getWaveformPartialText(): Int {
+        return EINK_WAVEFORM_UPDATE_PARTIAL + EINK_WAVEFORM_MODE_REAGL
+    }
+
     override fun getWaveformFullUi(): Int {
         return EINK_WAVEFORM_UPDATE_FULL + EINK_WAVEFORM_MODE_REAGL
     }

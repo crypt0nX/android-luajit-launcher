@@ -55,7 +55,8 @@ class OnyxEPDController : QualcommEPDController(), EPDInterface {
                             mode: Int, delay: Long,
                             x: Int, y: Int, width: Int, height: Int, epdMode: String?)
     {
-        requestEpdMode(targetView, mode, delay, x, y, width, height)
+        // KOReader passes right/bottom, while current Onyx firmware expects width/height.
+        requestEpdMode(targetView, mode, delay, x, y, width - x, height - y)
     }
 
     override fun resume() {}

@@ -22,6 +22,12 @@ interface EPDInterface {
                    mode: Int, delay: Long,
                    x: Int, y: Int, width: Int, height: Int, epdMode: String?)
 
+    /**
+     * Select the refresh policy for the currently opened document.
+     * Controllers that do not need a document-specific policy keep the no-op default.
+     */
+    fun setDocumentMode(fullOnly: Boolean) {}
+
     fun resume()
     fun pause()
 }

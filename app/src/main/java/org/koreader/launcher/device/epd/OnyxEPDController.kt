@@ -20,6 +20,7 @@ class OnyxEPDController : QualcommEPDController(), EPDInterface {
                 runCatching {
                     HiddenApiBypass.addHiddenApiExemptions(
                         "Landroid/onyx/ViewUpdateHelper;",
+                        "Landroid/onyx/optimization/EInkHelper;",
                     )
                 }.onFailure { error ->
                     Log.e(TAG, "BOOX EPD hidden API exemption failed", error)
@@ -28,6 +29,7 @@ class OnyxEPDController : QualcommEPDController(), EPDInterface {
         }
     }
 
+    private var fullOnlyDocument = getMode() == "full-only"
     private var debouncerPrevented = false
 
     private fun preventBooxSystemRefresh(): Boolean {
@@ -48,6 +50,29 @@ class OnyxEPDController : QualcommEPDController(), EPDInterface {
             true
         } catch (e: Exception) {
             Log.e(TAG, "ViewUpdateHelper.debouncer reflection failed: ${e.message}", e)
+            false
+        }
+    }
+
+    private fun resumeBooxSystemRefresh(): Boolean {
+        if (!hiddenApiAccess) {
+            return false
+        }
+        return try {
+            // Ask BOOX's EInkHelper to reapply the current debouncer setting.
+            val helperClass = Class.forName("android.onyx.optimization.EInkHelper")
+            val duration = (helperClass.getMethod("getAnimationDuration")
+                .invoke(null) as Number).toInt()
+            if (duration < 0) {
+                Log.w(TAG, "BOOX E-Ink service is not ready")
+                return false
+            }
+            helperClass.getMethod("setAnimationDuration", Integer.TYPE)
+                .invoke(null, duration)
+            Log.i(TAG, "reapplied BOOX debouncer setting (animationDuration=$duration)")
+            true
+        } catch (e: Exception) {
+            Log.e(TAG, "EInkHelper debouncer restore failed: ${e.message}", e)
             false
         }
     }
@@ -96,11 +121,25 @@ class OnyxEPDController : QualcommEPDController(), EPDInterface {
         return false
     }
 
+    override fun setDocumentMode(fullOnly: Boolean) {
+        fullOnlyDocument = fullOnly
+        if (fullOnly) {
+            // Fixed-page documents skip explicit partial updates. Keep BOOX's
+            // automatic SurfaceFlinger refresh enabled for those updates.
+            resumeBooxSystemRefresh()
+            debouncerPrevented = false
+        } else {
+            // Reflowable text uses explicit partial updates, so suppress the
+            // delayed BOOX refresh that would otherwise cause a second flash.
+            debouncerPrevented = preventBooxSystemRefresh()
+        }
+    }
+
     override fun setEpdMode(targetView: android.view.View,
                             mode: Int, delay: Long,
                             x: Int, y: Int, width: Int, height: Int, epdMode: String?)
     {
-        if (!debouncerPrevented) {
+        if (!fullOnlyDocument && !debouncerPrevented) {
             debouncerPrevented = preventBooxSystemRefresh()
         }
         // KOReader passes right/bottom, while current Onyx firmware expects width/height.

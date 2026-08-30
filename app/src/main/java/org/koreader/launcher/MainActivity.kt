@@ -399,6 +399,10 @@ class MainActivity : NativeActivity(), LuaInterface,
         return device.einkPlatform
     }
 
+    override fun setEinkDocumentMode(fullOnly: Boolean) {
+        device.epd.setDocumentMode(fullOnly)
+    }
+
     override fun getExternalPath(): String {
         return MainApp.storage_path
     }

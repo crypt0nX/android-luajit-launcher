@@ -73,6 +73,7 @@ interface LuaInterface {
     fun safFilePicker(path: String?): Boolean
     fun sendText(text: String, reason: String? = null, title: String? = null, mimetype: String? = null)
     fun setFullscreen(enabled: Boolean)
+    fun setEinkDocumentMode(fullOnly: Boolean)
     fun setClipboardText(text: String)
     fun setIgnoreInput(enabled: Boolean)
     fun setScreenBrightness(brightness: Int)

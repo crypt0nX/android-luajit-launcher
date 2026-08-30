@@ -2347,6 +2347,17 @@ local function run(android_app_state)
         end)
     end
 
+    android.setEinkDocumentMode = function(full_only)
+        JNI:context(android.app.activity.vm, function(jni)
+            jni:callVoidMethod(
+                android.app.activity.clazz,
+                "setEinkDocumentMode",
+                "(Z)V",
+                ffi.new("bool", full_only and true or false)
+            )
+        end)
+    end
+
     android.needsWakelocks = function()
         return JNI:context(android.app.activity.vm, function(jni)
             return jni:callBooleanMethod(

@@ -2,17 +2,62 @@
 
 package org.koreader.launcher.device.epd
 
+import android.os.Build
+import android.util.Log
+import org.lsposed.hiddenapibypass.HiddenApiBypass
 import org.koreader.launcher.device.EPDInterface
 import org.koreader.launcher.device.epd.qualcomm.QualcommEPDController
 
 class OnyxEPDController : QualcommEPDController(), EPDInterface {
+
+    private companion object {
+        const val TAG = "EPD"
+
+        private val hiddenApiAccess: Boolean by lazy {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                true
+            } else {
+                runCatching {
+                    HiddenApiBypass.addHiddenApiExemptions(
+                        "Landroid/onyx/ViewUpdateHelper;",
+                    )
+                }.onFailure { error ->
+                    Log.e(TAG, "BOOX EPD hidden API exemption failed", error)
+                }.getOrDefault(false)
+            }
+        }
+    }
+
+    private var debouncerPrevented = false
+
+    private fun preventBooxSystemRefresh(): Boolean {
+        if (!hiddenApiAccess) {
+            return false
+        }
+        return try {
+            // Official BOOX API: ViewUpdateHelper.debouncer(false, 0, 0, 0, 0).
+            Class.forName("android.onyx.ViewUpdateHelper").getMethod(
+                "debouncer",
+                Boolean::class.javaPrimitiveType,
+                Int::class.javaPrimitiveType,
+                Int::class.javaPrimitiveType,
+                Int::class.javaPrimitiveType,
+                Int::class.javaPrimitiveType
+            ).invoke(null, false, 0, 0, 0, 0)
+            Log.i(TAG, "called ViewUpdateHelper.debouncer(false, 0, 0, 0, 0)")
+            true
+        } catch (e: Exception) {
+            Log.e(TAG, "ViewUpdateHelper.debouncer reflection failed: ${e.message}", e)
+            false
+        }
+    }
 
     override fun getPlatform(): String {
         return "qualcomm"
     }
 
     override fun getMode(): String {
-        return "full-only"
+        return "all"
     }
 
     override fun getWaveformFull(): Int {
@@ -55,10 +100,21 @@ class OnyxEPDController : QualcommEPDController(), EPDInterface {
                             mode: Int, delay: Long,
                             x: Int, y: Int, width: Int, height: Int, epdMode: String?)
     {
+        if (!debouncerPrevented) {
+            debouncerPrevented = preventBooxSystemRefresh()
+        }
         // KOReader passes right/bottom, while current Onyx firmware expects width/height.
         requestEpdMode(targetView, mode, delay, x, y, width - x, height - y)
     }
 
-    override fun resume() {}
-    override fun pause() {}
+    override fun resume() {
+        if (getMode() == "all") {
+            debouncerPrevented = false
+        }
+    }
+    override fun pause() {
+        if (getMode() == "all") {
+            debouncerPrevented = false
+        }
+    }
 }

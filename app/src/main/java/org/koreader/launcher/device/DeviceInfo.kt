@@ -95,8 +95,10 @@ object DeviceInfo {
         ONYX_FAUST3,
         ONYX_GALILEO2,
         ONYX_GO_103,
+        ONYX_GO_103_2,
         ONYX_GO_COLOR7,
         ONYX_GO6,
+        ONYX_GO6GEN2,
         ONYX_GO7,
         ONYX_GO7GEN2,
         ONYX_JDREAD,
@@ -165,6 +167,7 @@ object DeviceInfo {
         TOLINO_VISION4,
         TOLINO_VISION5,
         TOLINO_VISION6,
+        TOPJOY_E602,
         XIAOMI_READER,
     }
 
@@ -450,6 +453,10 @@ object DeviceInfo {
             BRAND == "onyx" && MODEL == "go103"
             -> Id.ONYX_GO_103
 
+            // Onyx Boox Go 10.3 Gen II ("Lumi")
+            BRAND == "onyx" && MODEL == "go103_2lumi"
+            -> Id.ONYX_GO_103_2
+
             // Onyx Boox Go Color 7
             BRAND == "onyx" && MODEL == "gocolor7"
             -> Id.ONYX_GO_COLOR7
@@ -461,6 +468,10 @@ object DeviceInfo {
             // Onyx Boox Go 6
             BRAND == "onyx" && MODEL == "go6"
             -> Id.ONYX_GO6
+
+            // Onyx Boox Go 6 Gen II
+            BRAND == "onyx" && MODEL == "go6_2"
+            -> Id.ONYX_GO6GEN2
 
             // Onyx Boox Go 7
             BRAND == "onyx" && MODEL == "go7"
@@ -732,6 +743,10 @@ object DeviceInfo {
             BRAND == STR_TOLINO && MODEL == "imx50_rdp"
             || MODEL == STR_TOLINO && (DEVICE == "tolino_vision2" || DEVICE == STR_NTX)
             -> Id.TOLINO
+
+            // Topjoy
+	        MANUFACTURER == "topjoy" && MODEL == "e602"
+	        -> Id.TOPJOY_E602
 
             // Xiaomi
             MANUFACTURER == "xiaomi" && BRAND == "xiaomi" && MODEL == "xiaomi_reader" && DEVICE == "rk3566_eink" && HARDWARE == "rk30board"
